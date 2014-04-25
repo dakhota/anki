@@ -383,7 +383,9 @@ the manual for information on how to restore from an automatic backup."))
         if cleanup:
             cleanup(state)
         self.state = state
+        runHook('beforeStateChange', state, oldState, *args)
         getattr(self, "_"+state+"State")(oldState, *args)
+        runHook('afterStateChange', state, oldState, *args)
 
     def _deckBrowserState(self, oldState):
         self.deckBrowser.show()
@@ -512,7 +514,7 @@ title="%s">%s</button>''' % (
         self.toolbar = aqt.toolbar.Toolbar(self, tweb)
         self.toolbar.draw()
         # main area
-        self.web = aqt.webview.AnkiWebView(canCopy=True)
+        self.web = aqt.webview.AnkiWebView(canFocus=True)
         self.web.setObjectName("mainText")
         self.web.setFocusPolicy(Qt.WheelFocus)
         self.web.setMinimumWidth(400)
